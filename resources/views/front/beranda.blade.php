@@ -146,7 +146,7 @@
                     @forelse ($beritas as $berita)
                     <div class="col col-md-4 ">
                         <div class="card" >
-                            <img src="{{ asset('storage/'. $berita->gambar) }}" class="card-img-top object-fit-cover" alt="..."
+                            <img src="{{ asset(''. $berita->gambar) }}" class="card-img-top object-fit-cover" alt="..."
                                 style="height: 12rem;" />
                             <div class="card-body">
                                 <h5 class="card-title">{{ $berita->judul }}</h5>

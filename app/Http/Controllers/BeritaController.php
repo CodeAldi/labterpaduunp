@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
@@ -38,8 +39,11 @@ class BeritaController extends Controller
         $judul = $request->judul;
         $slug = preg_replace("/\s+/", "-", $judul);
         $kategori = $request->kategori;
-        $image = $request->file('thumbnail')->store('news-thumbnail','public');
-        $thubmnail = $image;
+        $image = $request->file('thumbnail');
+        $file = $image->getClientOriginalName();
+        $pindahpublic = public_path().'/'."news-images/";
+        $image->move($pindahpublic,$file);
+        $thubmnail = $file;
         $isi = $request->isi;
 
 
@@ -50,7 +54,7 @@ class BeritaController extends Controller
         $berita->body = $isi;
         $berita->singkat = Str::limit(strip_tags($isi), 50);
         $berita->user_id = $user;
-        $berita->gambar = $image;
+        $berita->gambar = '/' . "news-images/" . $file;
         $berita->save();
         return redirect()->route('admin.dashboard.berita.show');
     }
@@ -87,7 +91,7 @@ class BeritaController extends Controller
     public function destroy(Berita $berita)
     {
         $gambar=$berita->gambar;
-        Storage::disk('public')->delete($gambar);
+        File::delete(public_path().$gambar);
         $berita->delete();
         return back();
         
